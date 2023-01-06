@@ -29,13 +29,22 @@ def gallery():
     banners = glob("./static/banners/*.png")
     return render_template("gallery.html", banners=banners)
 
-@app.route("/gallery/<int:number>", methods=['GET'])
-def gallery_specific(number):
-    "Returns selected banner"
-    banners = glob(f"{os.path.dirname(__file__)}/banners/*.png")
-    if number >= len(banners):
-        return f"§^ム^§ < Sorry, but requested banner #{number} does not exist."
-    return send_file(os.path.abspath(banners[number]), mimetype="image/png")
+class StaticBanner(View):
+    "dinamic dispatch class for banner (direct access)"
+    methods = ['GET']
+    def __init__(self, material, mime):
+        self.material = material
+        self.material_abspath = os.path.abspath(material)
+        self.mime = mime
+    
+    def dispatch_request(self):
+        return send_file(self.material_abspath, mimetype=self.mime)
+
+for banner in glob("./static/banners/*.png"):
+    app.add_url_rule(
+        f"/{os.path.basename(banner)}",
+        view_func=StaticBanner.as_view(os.path.basename(banner), banner, "image/png")
+        )
 
 # favicon: favicon.ico, favicon.png, site.webmanifest etc.
 class Favicon(View):
@@ -47,7 +56,7 @@ class Favicon(View):
         self.mime = mime
 
     def dispatch_request(self):
-        return send_file(self.material_abspath, self.mime)
+        return send_file(self.material_abspath, mimetype=self.mime)
 
 # favicons in this site
 favicon_materials = {
