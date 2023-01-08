@@ -8,9 +8,10 @@ from random import choice
 from flask import Flask, make_response, redirect, render_template, send_file, url_for
 from flask.views import View
 
+banners = glob("./static/banners/*.png")
+
 # app instance
 app = Flask(__name__)
-app.config["banner_list"] = glob("./static/banners/*.png")
 
 @app.route("/")
 def root_text():
@@ -20,13 +21,13 @@ def root_text():
 @app.route("/banner.png", methods=['GET'])
 def get_banner():
     "Returns random banner"
-    banner = choice(app.config["banner_list"])
+    banner = choice(banners)
     return redirect(url_for(os.path.basename(banner)))
 
 @app.route("/gallery", methods=['GET'])
 def gallery():
     "return gallery"
-    return render_template("gallery.html", banners=app.config["banner_list"])
+    return render_template("gallery.html", banners=banners)
 
 class StaticBanner(View):
     "dinamic dispatch class for banner (direct access)"
@@ -41,7 +42,7 @@ class StaticBanner(View):
         resp.headers['Cache-Control'] = "max-age=604800"
         return resp
 
-for banner in app.config["banner_list"]:
+for banner in banners:
     app.add_url_rule(
         f"/{os.path.basename(banner)}",
         view_func=StaticBanner.as_view(os.path.basename(banner), banner, "image/png")
