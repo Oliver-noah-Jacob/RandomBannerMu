@@ -10,6 +10,7 @@ from flask.views import View
 
 # app instance
 app = Flask(__name__)
+app.config["banner_list"] = glob("./static/banners/*.png")
 
 @app.route("/")
 def root_text():
@@ -19,15 +20,13 @@ def root_text():
 @app.route("/banner.png", methods=['GET'])
 def get_banner():
     "Returns random banner"
-    banners = glob("./static/banners/*.png")
-    banner = choice(banners)
+    banner = choice(app.config["banner_list"])
     return redirect(url_for(os.path.basename(banner)))
 
 @app.route("/gallery", methods=['GET'])
 def gallery():
     "return gallery"
-    banners = glob("./static/banners/*.png")
-    return render_template("gallery.html", banners=banners)
+    return render_template("gallery.html", banners=app.config["banner_list"])
 
 class StaticBanner(View):
     "dinamic dispatch class for banner (direct access)"
@@ -42,7 +41,7 @@ class StaticBanner(View):
         resp.headers['Cache-Control'] = "max-age=604800"
         return resp
 
-for banner in glob("./static/banners/*.png"):
+for banner in app.config["banner_list"]:
     app.add_url_rule(
         f"/{os.path.basename(banner)}",
         view_func=StaticBanner.as_view(os.path.basename(banner), banner, "image/png")
