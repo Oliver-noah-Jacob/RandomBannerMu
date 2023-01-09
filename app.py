@@ -9,7 +9,7 @@ from flask import Flask, make_response, redirect, render_template, send_file, ur
 from flask.views import View
 
 #banners = glob("./static/banners/*.png")
-banners = ["logo.png", "QR.png"]
+banners = ["./static/banners/logo.png", "./static/banners/QR.png"]
 
 # app instance
 app = Flask(__name__)
@@ -23,7 +23,7 @@ def root_text():
 def get_banner():
     "Returns random banner"
     #banner = choice(banners)
-    banner = random.choices(banners, k=1, weights=[4999,1])
+    banner = choices(banners, k=1, weights=[4999,1])[0]
     return redirect(url_for(os.path.basename(banner)))
 
 @app.route("/gallery", methods=['GET'])
