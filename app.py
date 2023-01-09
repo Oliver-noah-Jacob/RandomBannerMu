@@ -3,12 +3,13 @@
 
 from glob import glob
 import os
-from random import choice
+from random import choice, choices
 
 from flask import Flask, make_response, redirect, render_template, send_file, url_for
 from flask.views import View
 
-banners = glob("./static/banners/*.png")
+#banners = glob("./static/banners/*.png")
+banners = ["logo.png", "QR.png"]
 
 # app instance
 app = Flask(__name__)
@@ -21,7 +22,8 @@ def root_text():
 @app.route("/banner.png", methods=['GET'])
 def get_banner():
     "Returns random banner"
-    banner = choice(banners)
+    #banner = choice(banners)
+    banner = random.choices(banners, k=1, weights=[,1])
     return redirect(url_for(os.path.basename(banner)))
 
 @app.route("/gallery", methods=['GET'])
