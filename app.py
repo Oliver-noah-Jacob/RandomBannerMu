@@ -39,7 +39,8 @@ class StaticBanner(View):
     
     def dispatch_request(self):
         resp = make_response(send_file(self.material_abspath, mimetype=self.mime))
-        resp.headers['Cache-Control'] = "max-age=604800"
+        #resp.headers['Cache-Control'] = "max-age=604800"
+        resp.headers['Cache-Control'] = "no-store"
         return resp
 
 for banner in banners:
