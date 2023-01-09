@@ -23,7 +23,7 @@ def root_text():
 def get_banner():
     "Returns random banner"
     #banner = choice(banners)
-    banner = choices(banners, k=1, weights=[4999,1])[0]
+    banner = choices(banners, k=1, weights=[2499,1])[0]
     return redirect(url_for(os.path.basename(banner)))
 
 @app.route("/gallery", methods=['GET'])
