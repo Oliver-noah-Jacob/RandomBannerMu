@@ -8,8 +8,8 @@ from random import choice, choices
 from flask import Flask, make_response, redirect, render_template, send_file, url_for
 from flask.views import View
 
-#banners = glob("./static/banners/*.png")
-banners = ["./static/banners/logo.png", "./static/banners/QR.png"]
+banners = glob("./static/banners/*.png")
+#banners = ["./static/banners/logo.png", "./static/banners/QR.png"]
 
 # app instance
 app = Flask(__name__)
@@ -19,11 +19,16 @@ def root_text():
     "Root page"
     return ("No contents in this page. §^ム^§")
 
+# @app.route("/message")
+# def message():
+#     "Message page"
+#     return render_template("message.html")
+
 @app.route("/banner.png", methods=['GET'])
 def get_banner():
     "Returns random banner"
-    #banner = choice(banners)
-    banner = choices(banners, k=1, weights=[2499,1])[0]
+    banner = choice(banners)
+    #banner = choices(banners, k=1, weights=[2499,1])[0]
     return redirect(url_for(os.path.basename(banner)))
 
 @app.route("/gallery", methods=['GET'])
@@ -41,8 +46,8 @@ class StaticBanner(View):
     
     def dispatch_request(self):
         resp = make_response(send_file(self.material_abspath, mimetype=self.mime))
-        #resp.headers['Cache-Control'] = "max-age=604800"
-        resp.headers['Cache-Control'] = "no-store"
+        resp.headers['Cache-Control'] = "max-age=604800"
+        #resp.headers['Cache-Control'] = "no-store"
         return resp
 
 for banner in banners:
